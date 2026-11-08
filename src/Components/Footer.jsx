@@ -2,6 +2,7 @@ import React from 'react'
 import { FaArrowRight, FaFacebook, FaInstagram, FaPhoneAlt, FaTwitter, FaWhatsapp } from "react-icons/fa";
 import { FaTruckFast } from 'react-icons/fa6';
 import { IoMdMail } from 'react-icons/io';
+import {Link} from 'react-router-dom'
 
 function Footer() {
   return (

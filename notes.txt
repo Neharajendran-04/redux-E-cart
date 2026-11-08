@@ -1,0 +1,1 @@
+- extrareducers : It is used to handle the action that is happened created outside the slice

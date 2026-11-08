@@ -10,7 +10,7 @@ function Wishlist() {
       <h1 className='pt-5 text-primary fw-bold'>User's Wishlist</h1>
        <div className="row pt-3">
         {/* Duplicate column according to products */}
-        <div className="col-3">
+        <div className="col-lg-3">
           {/* cards */}
           <Card className='shadow p-2'>
             <Card.Img style={{height : "250px"}} variant="top" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT5zfSHaFjCVn8nNRnjGdH5x066TcdDHHQpgH64O2xCMnvbP7regOE-cX9a&s=10" />
