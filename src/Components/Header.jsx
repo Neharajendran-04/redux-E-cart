@@ -6,9 +6,14 @@ import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import { FaShoppingCart } from 'react-icons/fa';
 import { FaRegHeart, FaTruckFast } from 'react-icons/fa6';
+import { useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
+import { searchProduct } from '../Redux/Slices/productSlice';
 
-function Header() {
+
+
+function Header({insideProduct}) {
+  const dispatch = useDispatch()
   return (
    <Navbar expand="lg" className="bg-primary ">
       <Container>
@@ -16,9 +21,9 @@ function Header() {
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="ms-auto">
-            <Nav.Item>
-              <input type="text" className='form-control' placeholder='Search your products' />
-            </Nav.Item>
+            {insideProduct && <Nav.Item>
+              <input onChange={e => dispatch(searchProduct(e.target.value))} type="text" className='form-control' placeholder='Search your products' />
+            </Nav.Item>}
             <Link to={'/wishlist'} className='text-light text-decoration-none fw-bold ms-5 mt-2'><span ><FaRegHeart className='fw-bold fs-4 text-danger me-1'/></span  >Wishlist <Badge pill bg='secondary'>10</Badge></Link>
             <Link to={'/cart'} className='text-light text-decoration-none fw-bold ms-5 mt-2'><FaShoppingCart className='text-success fw-bold fs-3 me-1' />Cart <Badge pill bg='secondary'>10</Badge></Link>
           </Nav>

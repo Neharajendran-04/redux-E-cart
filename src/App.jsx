@@ -8,7 +8,6 @@ import Products from './Pages/Products'
 import Wishlist from './Pages/Wishlist'
 import Pnf from './Pages/Pnf'
 import Cart from './Pages/Cart'
-import Header from './Components/Header'
 import Footer from './Components/Footer'
 import View from './Pages/View'
 
@@ -19,7 +18,7 @@ function App() {
 
   return (
     <>
-    <Header />
+
     <Routes>
         <Route path='/' element = {<Products />}/>
         <Route path = '/products/:id' element = {<View/>} />
