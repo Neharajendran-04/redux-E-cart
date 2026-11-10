@@ -8,9 +8,6 @@ import { FaBackward, FaForward } from 'react-icons/fa';
 
 
 function Products() {
-
-
- 
   const {loading, allProducts, error} = useSelector(state => state.productReducer)
   const dispatch = useDispatch()
   const [currentPage, setCurrentPage] = useState(1)
