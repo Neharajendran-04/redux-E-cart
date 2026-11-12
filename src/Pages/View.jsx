@@ -6,6 +6,7 @@ import { useParams } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import Swal from 'sweetalert2'
 import { addToWishlist } from '../Redux/Slices/wishListSlice'
+import { addCart } from '../Redux/Slices/cartSlice'
 
 function View() {
   const dispatch = useDispatch()
@@ -14,6 +15,8 @@ function View() {
   console.log(id);
   const {allProducts }= useSelector(state => state.productReducer)
   const userWishlist = useSelector(state  => state.wishlistReducer)
+  const userCart = useSelector(state => state.CartReducer)
+
   useEffect(() => {
       setProduct(allProducts.find(product => product.id == id))
   }, [])
@@ -21,17 +24,29 @@ function View() {
 
   const handleWishlist = () => {
     // check the product already in the wishlist
-    const existingItem = userWishlist?.find(item => item.id == product.id)
+    const existingItem = userWishlist?.find(item => item?.id == product?.id)
     if(existingItem){
        Swal.fire({
         title:"Sorry",
         text:"Product already in your wishlist",
         icon:"error",
-        confirmButtonText:"ok"
+        confirmButtonText:"Ok"
        })
     }else{
       dispatch(addToWishlist(product))
     }
+  }
+
+    const handleCart = () => {
+    // check the product already in the cart
+    const existingItem = userCart?.find(item => item?.id == product?.id)
+    dispatch(addCart(product))
+     Swal.fire({
+        title:"Success",
+        text:existingItem? `${existingItem.title} quantity incremented` : "Product added to your cart",
+        icon:"success",
+        confirmButtonText:"ok"
+       })
   }
   
   return (
@@ -43,7 +58,7 @@ function View() {
            <img className='img-fluid w-50' src={product?.thumbnail} alt="no image" />
            <div className='d-flex justify-content-evenly mt-5'>
             <button onClick={handleWishlist} className='btn btn-success'>ADD TO WISHLIST</button>
-            <button className='btn btn-warning'>ADD TO CART</button>
+            <button onClick={handleCart} className='btn btn-warning'>ADD TO CART</button>
            </div>
           </div>
           <div className='col-lg-6 fw-bold'>
@@ -55,7 +70,7 @@ function View() {
               <h5 className='fw-bold'>Client Reviews</h5>
               {
                 product?.reviews?.map(review => (
-                  <div className='border rounded shadow p-2 my-5'  key={review.id}>
+                  <div className='border rounded shadow p-2 my-5'  key={review?.id}>
                <p><span className='fw-bolder'>Name : {review?.reviewerName}</span> Message : {review?.comment}</p>
                <p>Rating : {review?.rating} <CiStar className='text-warning fs-4 fw-bold'/> </p>
               </div>

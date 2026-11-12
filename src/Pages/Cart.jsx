@@ -1,14 +1,50 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { RiCloseLargeFill } from 'react-icons/ri'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import Header from '../Components/Header'
+import { useDispatch, useSelector } from 'react-redux'
+import { removeCartItem, incrementCart, decrementCart, emptyCart } from '../Redux/Slices/cartSlice'
+import Swal from 'sweetalert2'
+
 
 
 function Cart() {
+  const dispatch = useDispatch()
+  const userCart = useSelector(state => state.CartReducer)
+  const [cartTotal, setCartTotal] = useState(0)
+  const navigate = useNavigate()
+
+
+  useEffect(() => {
+     setCartTotal(userCart?.reduce((acc,curr) => acc + curr.totalPrice, 0))
+  },[userCart])
+
+  const handleDecrementCart = (product) => {
+    if(product.quantity > 1){
+      dispatch(decrementCart(product.id))
+    }else{
+      dispatch(removeCartItem(product.id))
+    }
+
+  }
+  const handleCheckout = () => {
+    dispatch(emptyCart())
+    Swal.fire({
+      title  :  "Order placed successfully",
+      text : "Thank you for shopping with us",
+      icon : "success",
+      confirmButtonText : "ok"
+    })
+    navigate('/')
+  }
+
   return (
    <>
+      
       <Header />
-      <div style={{height : "80vh"}} className='container my-5 '>
+      {
+        userCart.length > 0 ?
+        <div  className='container my-5 '>
         <h1 className='pt-5 text-primary fw-bold'>User's Cart</h1>
         <div className='row'>
           <div className="col-lg-8 border shadow">
@@ -24,36 +60,48 @@ function Cart() {
                  </tr>
               </thead>
               <tbody>
-                   <tr>
-                      <td>1</td>
-                      <td>Sunscreen</td>
-                      <td><img style={{height : '80px'}} variant = "top" src="https://www.bbassets.com/media/uploads/p/l/40332085_1-aqualogica-glow-dewy-sunscreen-spf-50-pa.jpg" alt="sunscreen" /></td>
+                  {
+                    userCart.map((item, index) => (
+                       <tr key={item?.id}>
+                      <td>{index+1}</td>
+                      <td>{item?.title}</td>
+                      <td><img style={{height : '80px'}} variant = "top" src={item?.thumbnail}  alt="sunscreen" /></td>
                       <td>
                         <div className='d-flex '>
-                          <button className='btn fs-4'>-</button>
-                          <input style={{width : "40px"}} type="text" className='form-control' readOnly/>
-                          <button className='btn fs-4'>+</button>
+                          <button onClick={() => handleDecrementCart(item)} className='btn fs-4'>-</button>
+                          <input style={{width : "40px"}} value={item?.quantity} type="text" className='form-control' readOnly/>
+                          <button onClick={() => dispatch(incrementCart(item?.id))} className='btn fs-4'>+</button>
                         </div>
                       </td>
-                      <td>$30</td>
-                      <td><button className='btn text-danger fw-bold'><RiCloseLargeFill /></button></td>
+                      <td>${item?.totalPrice}</td>
+                      <td className='btn text-danger fw-bold' onClick={() => dispatch(removeCartItem(item?.id))} >X</td>  
                    </tr>
+                    ))
+                  }
               </tbody>
             </table>
             <div className='float-end p-3'>
-              <button className='btn btn-danger text-light me-3'>EMPTY CART</button>
+              <button onClick={() => dispatch(emptyCart())} className='btn btn-danger text-light me-3'>EMPTY CART</button>
               <Link to={'/'} className='btn btn-info text-light'>SHOP MORE</Link>
             </div>
           </div>
           <div className="col-lg-4">
              <div className='border shadow p-5 rounded text-center                                    '>
-              <h3>Total Amount : <span className='text-danger'>$300</span></h3>
+              <h3>Total Amount : <span className='text-danger'>${cartTotal}</span></h3>
               <hr />
-              <button className='btn btn-success w-100'>CHECKOUT</button>
+              <button onClick={handleCheckout} className='btn btn-success w-100'>CHECKOUT</button>
              </div>
           </div>
         </div>
-      </div>
+      </div> 
+      :
+       <div className='d-flex justify-content-center align-items-center flex-column'>
+                    <img className='img-fluid' src="https://cdn-icons-png.flaticon.com/512/11329/11329060.png" alt="No image" />
+                    <h1>Your Cart is empty</h1>
+                    <Link to={'/'} className='btn btn-primary mb-5'>Add more</Link>
+                  </div>
+      }
+      
    </>
   )
 }
